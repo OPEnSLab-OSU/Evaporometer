@@ -11,7 +11,7 @@ Receiving Unit:
 Transmitting Unit:  
 [Transmitter](http://a360.co/2sv6fhL)  
 [Humidity/Temperature_Sensor_Cover](http://a360.co/2spWfuV0)  
-[Tare_Button](http://a360.co/2w3MW1O)  
+[Tare_Button_Cover](http://a360.co/2w3MW1O)  
 [Light_Sensor_Attachement](http://a360.co/2f5fUKC)  
 [Wall_slide_Base](http://a360.co/2sq6Ndp)  
 [Tree_Attachement](http://a360.co/2f5OYdV)  
