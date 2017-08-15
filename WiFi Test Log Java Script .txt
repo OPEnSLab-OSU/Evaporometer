@@ -23,7 +23,7 @@ https://script.google.com/macros/s/<gscript id>/exec?celData=data_here
 GScript, PushingBox and Arduino/ESP8266 Variables in order:
 
 
-Variables for Evaporameter in order (Ethernet Shield) 
+Variables for Evaporameter in order (Ethernet Shield) *Important Note* Variable name must match exactly to Ethenet sketch
 
 
 IDtag
@@ -56,8 +56,9 @@ function doGet(e) {
     result = 'No Parameters';
   }
   else {
-    var id = '1GBV7n5VxR_GrZbz92TAMLo0iQUdiJlx7OLBuS5_CrPE';//docs.google.com/spreadsheetURL/d
-    var sheet = SpreadsheetApp.openById(id).getActiveSheet();
+    var id = '1GBV7n5VxR_GrZbz92TAMLo0iQUdiJlx7OLBuS5_CrPE';//specific to the spreadsheet you are working on. this is id is found     //directly after "docs.google.com/spreadsheetURL/d" in the URL. 
+   
+   var sheet = SpreadsheetApp.openById(id).getActiveSheet();
     var newRow = sheet.getLastRow() + 1;
     var rowData = [];
     //var waktu = new Date();
