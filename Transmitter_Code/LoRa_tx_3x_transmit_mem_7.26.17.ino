@@ -267,7 +267,7 @@ void loop() {
     Serial.println("Sending to rf95_server");
 #endif
     //begin sending to data to receiver (loops 3x)
-    for (int count = 0; count <= 3; count++) {
+    for (int count = 0; count < 3; count++) {
       int receivedID = 0;
       if(resFlag == false)
       {
