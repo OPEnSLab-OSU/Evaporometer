@@ -1,4 +1,4 @@
-These are the sensors that are one the Evaporimeter: 
+These are the sensors that are on the Evaporimeter: 
 
 [SHT31-D](https://www.adafruit.com/product/2857)  
 
