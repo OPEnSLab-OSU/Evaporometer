@@ -1,3 +1,5 @@
+# Current working code as of 03/06/18#
+#changes: transmitting RSSI Values from Radio Handles OSU Network more effectively#
 #include <SPI.h>
 #include <Ethernet2.h>
 #include <RH_RF95.h>
