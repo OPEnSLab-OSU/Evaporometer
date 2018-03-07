@@ -40,7 +40,7 @@
 // Infrared/Full Light Sensor Settings--------------------
 //------------------------------------------------------------------------
 #include <Adafruit_Sensor.h>
-#include "Adafruit_TSL2591.h" // https://github.com/adafruit/Adafruit_TSL2591_Library
+#include <Adafruit_TSL2561_U.h> // https://github.com/adafruit/Adafruit_TSL2561
 //------------------------------------------------------------------------
 // Debug Mode, Set flag to 0 for normal operation
 //------------------------------------------------------------------------
@@ -59,8 +59,8 @@
 #define calibration_factor 430000//This value is obtained using the Calibration sketch (grams)
 
 //load cell variables//
-#define DOUT 5 //connecting the out and clock pins for the load cell
-#define CLK 6
+#define DOUT 12 //connecting the out and clock pins for the load cell
+#define CLK 13
 
 
 //Global Set-up//
@@ -70,6 +70,8 @@ int transmitBufLen; // length of transmit buffer
 const int ID = 100;
 uint16_t lightR, lightG, lightB, lightIR, lightFull;
 //char transmitBuf[23]; // this needs to be the length of the transmission buffer
+float temp_ar[5], humidity_ar[5], loadcell_ar[5];
+uint16_t lightIR_ar[5], lightFull_ar[5];
 
 HX711 scale(DOUT, CLK);
 
@@ -85,8 +87,8 @@ volatile bool resFlag = false; //Flag is set to true once response is found
 // Evap code from Manuel instance of temp/humidity sensor
 Adafruit_SHT31 sht31 = Adafruit_SHT31();
 
-// Create instance of TSL2591 light sensor
-Adafruit_TSL2591 tsl = Adafruit_TSL2591(2591); // can pass in a number for the sensor identifier (for your use later)
+// Create instance of TSL2561 light sensor
+Adafruit_TSL2561_Unified tsl = Adafruit_TSL2561_Unified(TSL2561_ADDR_FLOAT, 2561); // can pass in a number for the sensor identifier (for your use later)
 
 // Create instance of DS3231 called RTC
 RTC_DS3231 RTC; //we are using the DS3231 RTC
@@ -122,20 +124,20 @@ void setup()
   //report all sensors present on system
   Serial.println(" LoRa Feather Transmitter Test!");
   Serial.println("HX711 scale");
-  Serial.println("Starting Adafruit TSL2591 Test!");
+  Serial.println("Starting Adafruit TSL2561 Test!");
 #endif
-  
+
   //check light sensor init
   while (!tsl.begin())
-  {
-  #if DEBUG == 1
+    {
+    #if DEBUG == 1
     Serial.println("No sensor found ... check your wiring?");
-  #endif  
+    #endif
     while (1);
-  }
-  #if DEBUG == 1
-  Serial.println("Found a TSL2591 sensor");
-  #endif
+    }
+#if DEBUG == 1
+  Serial.println("Found a TSL2561 sensor");
+#endif
   /* Configure the sensor */
   configureSensor();
   //there's an option to print sensor details in example code - this requires addit'l functions and takes up too much space
@@ -146,26 +148,26 @@ void setup()
   digitalWrite(RFM95_RST, HIGH);
   delay(10);
   while (!rf95.init()) {
-    #if DEBUG == 1
-      Serial.println("LoRa radio init failed"); //if print wiring may be wrong
-    #endif
+#if DEBUG == 1
+    Serial.println("LoRa radio init failed"); //if print wiring may be wrong
+#endif
     while (1);
   }
-  #if DEBUG == 1
-    Serial.println("LoRa radio init OK!");
-  #endif
+#if DEBUG == 1
+  Serial.println("LoRa radio init OK!");
+#endif
   // checks if frequency is initialized
   // Defaults after init are 434.0MHz, modulation GFSK_Rb250Fd250, +13dbM
   if (!rf95.setFrequency(RF95_FREQ)) {
-    #if DEBUG == 1
-      Serial.println("setFrequency failed");
-    #endif
+#if DEBUG == 1
+    Serial.println("setFrequency failed");
+#endif
     while (1);
   }
-  #if DEBUG == 1
-    Serial.print("Set Freq to: ");
-    Serial.println(RF95_FREQ);
-  #endif
+#if DEBUG == 1
+  Serial.print("Set Freq to: ");
+  Serial.println(RF95_FREQ);
+#endif
 
   // Defaults after init are 434.0MHz, 13dBm, Bw = 125 kHz, Cr = 4/5, Sf = 128chips / symbol, CRC on
   // The default transmitter power is 13dBm, using PA_BOOST.
@@ -177,9 +179,9 @@ void setup()
   //RTC stuff init//
 
   InitalizeRTC();
-  #if DEBUG == 1
-    Serial.print("Alarm set to go off every "); Serial.print(WakePeriodMin); Serial.println("min from program time");
-  #endif
+#if DEBUG == 1
+  Serial.print("Alarm set to go off every "); Serial.print(WakePeriodMin); Serial.println("min from program time");
+#endif
   delay(1000);
 }
 ////////////////////////// MAIN //////////////////////
@@ -204,7 +206,7 @@ void loop() {
   }
   else
   {
-    delay(30000); // period in DEBUG mode to wait between samples
+    delay(1000); // period in DEBUG mode to wait between samples
     scale.power_up();
     TakeSampleFlag = 1;
   }
@@ -224,9 +226,21 @@ void loop() {
     RTC_timeString = RTC_hrString + ":" + RTC_minString + "_" + RTC_monthString + "/" + RTC_dayString;
 
     // Read sensors
-    temp = sht31.readTemperature(); // degrees C
-    humidity = sht31.readHumidity();// relative as a percent
-    loadCell = scale.get_units() ;
+    for (int i = 0; i < 5; i++) {
+      temp_ar[i] = sht31.readTemperature();
+    }
+    temp = (temp_ar[0] + temp_ar[1] + temp_ar[2] + temp_ar[3] + temp_ar[4]) / 5; // degrees C
+
+    for (int i = 0; i < 5; i++) {
+      humidity_ar[i] = sht31.readHumidity();
+    }
+    humidity = (humidity_ar[0] + humidity_ar[1] + humidity_ar[2] + humidity_ar[3] + humidity_ar[4]) / 5; // relative as a percent
+
+    for (int i = 0; i < 5; i++) {
+      loadcell_ar[i] = scale.get_units();
+    }
+    loadCell = (loadcell_ar[0] + loadcell_ar[1] + loadcell_ar[2] + loadcell_ar[3] + loadcell_ar[4]) / 5;
+
     advancedRead();  // gets full and IR light values, save to global vars lightFull, lightIR
 
     measuredvbat = analogRead(VBATPIN); // reading battery voltage
@@ -238,20 +252,18 @@ void loop() {
 
     // Manually power down the loadcell (wakes up when MCU wakes from sleep
     scale.power_down();
-    tsl.disable();
 
     // convert sensor data into string for concatenation
-    tempString =  String(temp, 2); // 2 decimal places
-    humidityString =  String(humidity, 2); // same
+    tempString =  String(temp, 3); // 2 decimal places
+    humidityString =  String(humidity, 3); // same
     loadCellString =  String(loadCell, 6); // 6 decimal places
     lightIRString = String(lightIR, DEC);
     lightFullString = String(lightFull, DEC);
     vbatString = String(measuredvbat, 1); //1 decimal place
-    // RGB string - not yet possible with TSL2591
 
-    //concatenate RGB and IR strings to stringTransmit
+    //concatenate all the readings to stringTransmit
     stringTransmit = String(IDstring + "," + RTC_timeString + "," + tempString + "," + humidityString + "," + loadCellString + "," + lightIRString + "," + lightFullString + "," + vbatString + "\0");//concates all strings into a big string
-   
+
     // Calc len of transmit buffer:
     transmitBufLen = 1 + (char)stringTransmit.length(); // add 2 here to include last actual char
 
@@ -267,14 +279,14 @@ void loop() {
     Serial.println("Sending to rf95_server");
 #endif
     //begin sending to data to receiver (loops 3x)
-    for (int count = 0; count <= 3; count++) {
+    for (int count = 0; count < 3; count++) {
       int receivedID = 0;
-      if(resFlag == false)
+      if (resFlag == false)
       {
-        if(count > 0)
+        if (count > 0)
           delay(3000); // Delay for the second and third transmit attempts
         rf95.send((uint8_t*)transmitBuf, transmitBufLen); //converts character array into unit8 type and sends it via LoRa radio
-#if DEBUG == 1  
+#if DEBUG == 1
         Serial.print("  attempt ");
         Serial.println(count + 1);
         Serial.println("  Sending value..."); //delay(10);
@@ -301,7 +313,7 @@ void loop() {
             Serial.println();
 #endif
             receivedID = atoi(buf);
-            if((int)receivedID == ID)
+            if ((int)receivedID == ID)
             {
               resFlag = true; // If the replyed ID value from the Hub matches the local ID, this is a valad reply, set flag to true
             }
@@ -324,7 +336,7 @@ void loop() {
 #endif
 
     // End big If statement from Sleep/Wake
-    
+
     // Stuff that NEEDS to happen at the end
     // Reset alarm1 for next period
     setAlarmFunction();
@@ -336,34 +348,33 @@ void loop() {
 
 
 //******************
-// TSL2591 Subroutines
+// TSL2561 Subroutines
 //******************
 /**************************************************************************
-    Configures the gain and integration time for the TSL2591
+    Configures the gain and integration time for the TSL2561
 **************************************************************************/
 void configureSensor(void)
 {
   // You can change the gain on the fly, to adapt to brighter/dimmer light situations
-  tsl.setGain(TSL2591_GAIN_LOW);    // 1x gain (bright light)
-  //tsl.setGain(TSL2591_GAIN_MED);      // 25x gain
-  //tsl.setGain(TSL2591_GAIN_HIGH);   // 428x gain
+  tsl.setGain(TSL2561_GAIN_1X);      /* No gain ... use in bright light to avoid sensor saturation */
+  //tsl.setGain(TSL2561_GAIN_16X);     /* 16x gain ... use in low light to boost sensitivity */
+  //tsl.enableAutoRange(true);          /* Auto-gain ... switches automatically between 1x and 16x */
+
 
   // Changing the integration time gives you a longer time over which to sense light
   // longer timelines are slower, but are good in very low light situtations!
-  tsl.setTiming(TSL2591_INTEGRATIONTIME_100MS);  // shortest integration time (bright light)
-  //tsl.setTiming(TSL2591_INTEGRATIONTIME_200MS);
-  //tsl.setTiming(TSL2591_INTEGRATIONTIME_300MS);
-  //tsl.setTiming(TSL2591_INTEGRATIONTIME_400MS);
-  //tsl.setTiming(TSL2591_INTEGRATIONTIME_500MS);
-  //tsl.setTiming(TSL2591_INTEGRATIONTIME_600MS);  // longest integration time (dim light)
+  //tsl.setIntegrationTime(TSL2561_INTEGRATIONTIME_13MS);      /* fast but low resolution */
+  tsl.setIntegrationTime(TSL2561_INTEGRATIONTIME_101MS);  /* medium resolution and speed   */
+  // tsl.setIntegrationTime(TSL2561_INTEGRATIONTIME_402MS);  /* 16-bit data but slowest conversions */
 
-#if DEBUG == 1
+  //This part of code doesn't work for TSL2561
+  //#if DEBUG == 1
   /* Display the gain and integration time for reference sake */
-  Serial.println("------------------------------------");
-  Serial.print  ("Gain:         ");
-  tsl2591Gain_t gain = tsl.getGain();
-  switch (gain)
-  {
+  /*Serial.println("------------------------------------");
+    Serial.print  ("Gain:         ");
+    tsl2591Gain_t gain = tsl.getGain();
+    switch (gain)
+    {
     case TSL2591_GAIN_LOW:
       Serial.println("1x (Low)");
       break;
@@ -376,33 +387,31 @@ void configureSensor(void)
     case TSL2591_GAIN_MAX:
       Serial.println("9876x (Max)");
       break;
-  }
-  Serial.print  ("Timing:       ");
-  Serial.print((tsl.getTiming() + 1) * 100, DEC);
-  Serial.println(" ms");
-  Serial.println("------------------------------------");
-  Serial.println("");
-#endif
+    }
+    Serial.print  ("Timing:       ");
+    Serial.print((tsl.getTiming() + 1) * 100, DEC);
+    Serial.println(" ms");
+    Serial.println("------------------------------------");
+    Serial.println("");
+    #endif*/
 }
 //**************************************************************************/
 //    Show how to read IR and Full Spectrum at once and convert to lux
 //**************************************************************************/
 void advancedRead(void)
 {
-  // More advanced data read example. Read 32 bits with top 16 bits IR, bottom 16 bits full spectrum
-  // That way you can do whatever math and comparisons you want!
-  uint32_t lum = tsl.getFullLuminosity();
-  //uint16_t ir, full;
-  lightIR = lum >> 16;
-  lightFull = lum & 0xFFFF;
+  //Taking samples 5 times for average
+  for (int i = 0; i < 5; i++) {
+    tsl.getLuminosity(&lightFull_ar[i], &lightIR_ar[i]);
+  }
+  lightIR = (lightIR_ar[0] + lightIR_ar[1] + lightIR_ar[2] + lightIR_ar[3] + lightIR_ar[4]) / 5;
+  lightFull = (lightFull_ar[0] + lightFull_ar[1] + lightFull_ar[2] + lightFull_ar[3] + lightFull_ar[4]) / 5;
   //Serial.print("[ "); Serial.print(millis()); Serial.print(" ms ] ");
   //Serial.print("IR: "); Serial.print(ir);  Serial.print("  ");
   //Serial.print("Full: "); Serial.print(full); Serial.print("  ");
   // Serial.print("Visible: "); Serial.print(full - ir); Serial.print("  ");
   // Serial.print("Lux: "); Serial.println(tsl.calculateLux(full, ir));
-
 }
-
 
 //******************
 // RTC Subroutines
