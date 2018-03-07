@@ -1,3 +1,7 @@
+/* This code works for devices wired similarly to Evaporometer transmitters
+* with the addition of an SPI wired SD card. Data is writted to SD card and 
+* NO LORA HUB IS REQUIRED and NO LORA TRANSMISSION is used.
+*/
 
 // SD Card library //-------------------
 #include <SPI.h>
