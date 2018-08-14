@@ -1,6 +1,7 @@
 /* Authors: Chet Udell, Marissa Kwon, Thomas DeBell
     Date: 06/26/2017
     THIS CODE IS IN COMPLETE AS OF 6/28/17 at 5:37 p.m do
+    THIS IS OUTDATED CODE SEE UPDATED LOOM CODE OR RH Manger Code
   Description: Code for "Transmitter" LoRa radio Feather Board; initilizes
   LoRa radio transmitter and sends data to LoRa receiver on the same
   frequency.
