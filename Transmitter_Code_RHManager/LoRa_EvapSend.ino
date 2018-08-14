@@ -1,6 +1,6 @@
-/* Authors: Chet Udell, Marissa Kwon, Thomas DeBell
-    Date: 06/26/2017
-    THIS CODE IS IN COMPLETE AS OF 6/28/17 at 5:37 p.m do
+/* Authors: Chet Udell, William Selbie, Thomas DeBell
+    Date: 04/26/2018
+   Updated Version using RH Manager and M0 Processor
   Description: Code for "Transmitter" LoRa radio Feather Board; initilizes
   LoRa radio transmitter and sends data to LoRa receiver on the same
   frequency.
@@ -11,10 +11,7 @@
   University.
   // Important Example code found at https://learn.adafruit.com/adafruit-rfm69hcw-and-rfm96-rfm95-rfm98-lora-packet-padio-breakouts/rfm9x-test
 
-  APPENDIX *****************************
-  SET-UP loop = 87, Void Loop(main) = 146, RTC Subroutines and loop= 241,
-  Alarm Function = 277, 298,  Wakeup ISR= 311, InteruptPin set-up= 313,323
-  ****************************************************8
+
 */
 
 // LoRa 9x_TX
