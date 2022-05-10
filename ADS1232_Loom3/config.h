@@ -1,0 +1,27 @@
+"{\
+  'general':\
+  {\
+    'name':'Device',\
+    'instance':1,\
+    'interval':5000,\
+    'print_verbosity':2\
+  },\
+  'components':[\
+    {\
+      'name':'SD',\
+      'params': [true,1000,11,'data',true]\
+    },\
+    {\
+      'name':'DS3231',\
+      'params':[10,true,true]\
+    },\
+    {\
+      'name':'InterruptManager',\
+      'params':'default'\
+    },\
+    {\
+      'name':'SleepManager',\
+      'params':[true,false,1]\
+    }\
+  ]\
+}"
