@@ -118,7 +118,7 @@ void loop() {
 
   getSD(Feather).log();
 
-  // set the RTC alarm to a duration of 3 seconds with TimeSpan
+  // set the RTC alarm to a duration of 30 seconds with TimeSpan
   getInterruptManager(Feather).RTC_alarm_duration(TimeSpan(0,0,0,30));
   getInterruptManager(Feather).reconnect_interrupt(12);
 
