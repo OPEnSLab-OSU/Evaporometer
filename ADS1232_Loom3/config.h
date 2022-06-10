@@ -12,6 +12,10 @@
       'params': [true,1000,11,'data',true]\
     },\
     {\
+      'name':'ADS1232',\
+      'params':[3,8403613,2041.46]\
+    },\
+    {\
       'name':'DS3231',\
       'params':[10,true,true]\
     },\
