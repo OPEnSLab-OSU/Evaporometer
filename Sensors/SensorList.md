@@ -1,8 +1,7 @@
-These are the sensors that are on the Evaporimeter: 
+These are the sensors that are on the Evaporometer: 
 
-[SHT31-D](https://www.adafruit.com/product/2857)  
+[SHT31](https://www.dfrobot.com/product-2160.html)  
 
-[Load Cell](https://www.amazon.com/uxcell-Electronic-Balance-Weighing-Sensor/dp/B006W2IDUO/ref=sr_1_1?s=home-garden&rps=1&ie=UTF8&qid=1494279830&sr=1-1&keywords=load+sensor+2kg&refinements=p_85:2470955011)
+[2 kg Load Cell](https://www.ato.com/single-point-load-cell-300g-to-500kg)
 
-[Light Sensor](https://www.adafruit.com/product/1980) 
 
