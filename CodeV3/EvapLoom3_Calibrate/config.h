@@ -1,0 +1,47 @@
+"{\
+  'general':\
+  {\
+    'name':'Device',\
+    'instance':1,\
+    'interval':5000,\
+    'print_verbosity':2\
+  },\
+  'components':[\
+    {\
+      'name':'SD',\
+      'params': [true,1000,11,'data',true]\
+    },\
+    {\
+      'name':'DS3231',\
+      'params':[10,true,true]\
+    },\
+    {\
+      'name':'InterruptManager',\
+      'params':'default'\
+    },\
+    {\
+      'name':'SleepManager',\
+      'params':[true,false,1]\
+    },\
+    {\
+      'name':'Analog',\
+      'params':[\
+        8,\
+        12,\
+        false,\
+        false,\
+        false,\
+        false,\
+        false,\
+        false,\
+        1,\
+        1,\
+        1,\
+        1,\
+        1,\
+        1,\
+        25.0\
+      ]\
+    }\
+  ]\
+}"

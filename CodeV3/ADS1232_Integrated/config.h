@@ -1,0 +1,31 @@
+"{\
+  'general':\
+  {\
+    'name':'Evap',\
+    'instance':1,\
+    'interval':5000,\
+    'print_verbosity':2\
+  },\
+  'components':[\
+    {\
+      'name':'SD',\
+      'params': [true,1000,11,'data',true]\
+    },\
+    {\
+      'name':'ADS1232',\
+      'params':[3,8644233,2212.17]\
+    },\
+    {\
+      'name':'DS3231',\
+      'params':[10,true,true]\
+    },\
+    {\
+      'name':'InterruptManager',\
+      'params':'default'\
+    },\
+    {\
+      'name':'SleepManager',\
+      'params':[true,false,1]\
+    }\
+  ]\
+}"
