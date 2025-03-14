@@ -119,6 +119,7 @@ void loop() {
   ads.power_up();
   manager.pause(1000);
   float weight = get_weight();
+  Serial.println(weight);
   // get the temp
   Serial.println("Taking temp");
   long temp = analogRead(THRM);
