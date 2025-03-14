@@ -13,6 +13,8 @@
 #include <ADS1232_Lib.h>
 #include <Hardware/Loom_Hypnos/Loom_Hypnos.h>
 #include <Hardware/Loom_Hypnos/SDManager.h>
+#include <algorithm>
+
 
 #define PDWN A5
 #define SCLK A4
@@ -21,8 +23,8 @@
 
 #define THRM A1
 
-#define OFFSET 8719168.75
-#define SCALE 2089.198125
+#define OFFSET 9338884
+#define SCALE 1992.055
 
 Manager     manager("Device", 1);
 ADS1232_Lib ads(PDWN, SCLK, DOUT);
@@ -67,14 +69,17 @@ void log_data(float weight, long temp, float vbat){
   sd.writeLineToFile("Device0.csv", date_and_data);
 }
 
-float get_weight(){
-  float weights[3];
-  
-  for(int i = 0; i < 3; i++)
-    weights[i] = ads.units_read(10);
+float get_weight() {
+  float weights[3] = {};
+  int n = sizeof(weights)/sizeof(weights[0]);
 
-  float final_weight = weights[0];
-  
+  for(int i = 0; i < 3; i++) {
+    weights[i] = ads.units_read(10);
+  }
+
+  std::sort(weights, weights + n);
+
+  return weights[1];
 }
 
 float get_vbat(){
