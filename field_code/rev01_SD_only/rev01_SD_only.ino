@@ -15,14 +15,11 @@
 #include <Hardware/Loom_Hypnos/SDManager.h>
 #include <algorithm>
 
-
 #define PDWN A5
 #define SCLK A4
 #define DOUT A3
 #define VBATPIN A7
-
 #define THRM A1
-
 #define OFFSET 9338884
 #define SCALE 1992.055
 
@@ -30,7 +27,6 @@ Manager     manager("Device", 1);
 ADS1232_Lib ads(PDWN, SCLK, DOUT);
 Loom_Hypnos hypnos(manager, HYPNOS_VERSION::V3_3, TIME_ZONE::PST, true, false);
 SDManager   sd(&manager, 11);
-
 
 /*
  *    Function: log_date
@@ -90,7 +86,6 @@ float get_vbat(){
   Serial.print("VBat: " ); Serial.println(measuredvbat);
   return measuredvbat;
 }
-
 
 void isr_Trigger(){
   hypnos.wakeup();
